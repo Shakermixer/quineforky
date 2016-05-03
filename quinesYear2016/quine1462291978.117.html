@@ -1,0 +1,51 @@
+<html><head><script>quine = { jsonstring: "", objects: {
+	"glo": {
+		"license": "GNU GPL 2+",
+		"authors": [
+			"Ben F Rayfield (from 2016-5)"
+		],
+		"descriptionOfQuineJsonString": "updated by parsing quine.ob after translating a few active parts of the quine",
+		"descriptionOfQuineObjects": "map of string to map, a shallow tree naming objects by string instead of pointer",
+		"time": 1462291977.301
+	},
+	"worksInBrowsers": {
+		"firefox": true,
+		"chrome": true,
+		"opera": true,
+		"ie": true,
+		"safari": false
+	},
+	"copyObjectsToJsonString": {
+		"jscode": "(function(){ quine = { jsonString: JSON.stringify(quine.objects,null,'\t'), objects: quine.objects, getFunc: eval(quine.objects.getFunc.jscode), start: function(){ eval(quine.objects.start.jscode)() } } })",
+		"description": "TODO"
+	},
+	"copyJsonStringToObjects": {
+		"jscode": "(function(){ quine = { jsonString: quine.jsonString, objects: JSON.parse(quine.jsonString), getFunc: eval(quine.objects.getFunc.jscode), start: function(){ eval(quine.objects.start.jscode)() } } })"
+	},
+	"getFunc": {
+		"jscode": "(function(name){ if(quine.funcCache === undefined) quine.funcCache = {}; var f = quine.funcCache[name]; if(f === undefined){ var code = quine.objects[name].jscode; quine.funcCache[name] = f = eval(code); } return f; })"
+	},
+	"quineIn": {
+		"jscode": "(function(text){ alert('quineIn text: '+text); })",
+		"description": "Input an html file containing quine javascript, or input just the json, or input a text command or local search query. Modifies quine.objects at all steps during computing about that and user interaction."
+	},
+	"quineOutHtml": {
+		"jscode": "(function(){ quine.getFunc('copyObjectsToJsonString')(); var h = '<html><head><scr'+'ipt>quine = { jsonstring: \"\", objects: '+quine.jsonString+', start: function(){ eval(quine.objects.start.jscode)() } }; window.onload = quine.start;</scr'+'ipt></head><body><div id=\"quineDiv\" width=100%>quine loading...</div></body></html>'; console.log('quineOutHtml: '+h); return h; })",
+		"description": "Wraps quine.jsonString in html that should equal the html file running in browser right now if you just called quine.copyObjectsToJsonString()"
+	},
+	"askUserToSaveQuineOutHtml": {
+		"jscode": "(function(){ var html = quine.getFunc('quineOutHtml')(); var blob = new Blob([html], {type: 'text/html'}); var filename = 'quine'+(Date.now()*.001)+'.html'; if(window.navigator.msSaveOrOpenBlob){ window.navigator.msSaveBlob(blob, filename); }else{ var elem = window.document.createElement('a'); elem.href = window.URL.createObjectURL(blob); elem.download = filename; document.body.appendChild(elem); elem.click(); document.body.removeChild(elem); } })"
+	},
+	"nextState": {
+		"jscode": "(function(){ document.getElementById('quineDiv').innerHTML = 'time: '+(quine.objects.glo.time=Date.now()*.001); })"
+	},
+	"start": {
+		"jscode": "(function(){ quine.getFunc = eval(quine.objects.getFunc.jscode); document.getElementById('quineDiv').innerHTML = 'quine wrote this'; quine.getFunc('nextState')(); quine.getFunc('displayButtonForZeroParamFunc')('copyObjectsToJsonString'); quine.getFunc('displayButtonForZeroParamFunc')('copyJsonStringToObjects'); quine.getFunc('displayButtonForZeroParamFunc')('nextState'); quine.getFunc('displayButtonForZeroParamFunc')('quineOutHtml'); quine.getFunc('displayButtonForZeroParamFunc')('askUserToSaveQuineOutHtml'); })"
+	},
+	"displayButtonForZeroParamFunc": {
+		"jscode": "(function(objectName){ var div = document.getElementById('quineDiv'); var btn = document.createElement('input'); btn.setAttribute('type','button'); btn.setAttribute('value',objectName); btn.onclick=quine.getFunc(objectName); div.appendChild(btn); })"
+	},
+	"displayDropTarget": {
+		"description": "TODO when drag in file, parse it as UTF8 and send to quineIn"
+	}
+}, start: function(){ eval(quine.objects.start.jscode)() } }; window.onload = quine.start;</script></head><body><div id="quineDiv" width=100%>quine loading...</div></body></html>
